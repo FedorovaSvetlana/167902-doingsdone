@@ -16,7 +16,7 @@ $date_deadline = date("d.m.Y", $task_deadline_ts);
 $days_until_deadline = ($task_deadline_ts-$current_ts) / 86400;
 
 // массив категорий
-$categories = ["Все", "Входящие", "Учеба", "Работа", "Домашние дела", "Авто"];
+$categories = ['Все', 'Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
 
 //массив задач
 $tasks = [
@@ -57,6 +57,23 @@ $tasks = [
         'is_done' => false
     ]
 ]
+?>
+<?php
+// функция подсчёта задач в категории
+function count_tasks($tasks, $category) {
+    $counter = 0;
+
+    if ($category == "Все") {
+        $counter = count($tasks);
+    }
+
+    foreach ($tasks as $value) {
+      if ($value['category'] == $category) {
+        $counter++;
+      }
+    }
+    return $counter;
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -102,11 +119,11 @@ $tasks = [
                   $num = count($categories);
                   while ($index < $num) {
                     $category = $categories[$index]; ?>
-                    <li class="main-navigation__list-item <? if ($index == 0) { ?>main-navigation__list-item--active<? } ?>">
-                        <a class="main-navigation__list-item-link" href="<?=$category;?>"><?=$category;?></a>
-                        <span class="main-navigation__list-item-count">24</span>
+                    <li class="main-navigation__list-item <?php if ($index == 0): ?>main-navigation__list-item--active<?php endif; ?>">
+                        <a class="main-navigation__list-item-link" href="#"><?=$category;?></a>
+                        <span class="main-navigation__list-item-count"><?=count_tasks($tasks, $category);?></span>
                     </li> <?
-                    $index = $index + 1;
+                    $index++;
                     } ?>
                 </nav>
                 <a class="button button--transparent button--plus content__side-button" href="#">Добавить проект</a>
@@ -145,21 +162,21 @@ $tasks = [
 
                     <label class="checkbox">
                         <!--добавить сюда аттрибут "checked", если переменная $show_complete_tasks равна единице-->
-                        <input id="show-complete-tasks" class="checkbox__input visually-hidden" type="checkbox" <?php if ($show_complete_tasks == "1"): ?> checked <?php endif; ?>>
+                        <input id="show-complete-tasks" class="checkbox__input visually-hidden" type="checkbox" <?php if ($show_complete_tasks): ?> checked <?php endif; ?>>
                         <span class="checkbox__text">Показывать выполненные</span>
                     </label>
                 </div>
 
                 <table class="tasks">
-                  <?php foreach ($tasks as $key => $value): ?>
-                    <tr class="tasks__item task <?php if ($value['is_done'] == true): ?>task--completed<?php endif; ?>">
+                  <?php foreach ($tasks as $task): ?>
+                    <tr class="tasks__item task <?php if ($task['is_done'] == true): ?>task--completed<?php endif; ?>">
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
-                                <input class="checkbox__input visually-hidden" type="checkbox" <?php if ($value['is_done'] == true): ?> checked <?php endif; ?>>
-                                <span class="checkbox__text"><?=$value['task'];?></span>
+                                <input class="checkbox__input visually-hidden" type="checkbox" <?php if ($task['is_done']): ?> checked <?php endif; ?>>
+                                <span class="checkbox__text"><?=$task['task'];?></span>
                             </label>
                         </td>
-                        <td class="task__date"><?=$value['date'];?></td>
+                        <td class="task__date"><?=$task['date'];?></td>
                         <td class="task__controls">
                             <button class="expand-control" type="button" name="button">Выполнить первое задание</button>
 
